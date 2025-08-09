@@ -1,6 +1,3 @@
-let tmpX = 0
-let tmpY = 0
-let tmpZ = 0
 player.onChat("turn", function (x) {
     for (let index = 0; index < x; index++) {
         agent.turn(LEFT_TURN)
@@ -45,6 +42,38 @@ player.onChat("build-pyramid", function (x, y, z) {
 player.onChat("go", function (x) {
     agent.move(FORWARD, x)
 })
+player.onChat("build-air-pyramid", function (x, y, z) {
+    turnBuilderMyDirection()
+    builder.teleportTo(player.position())
+    builder.move(FORWARD, 3)
+    builder.setOrigin()
+    tmpX = x
+    tmpY = 0
+    tmpZ = z
+    for (let index = 0; index < y; index++) {
+        builder.mark()
+        builder.move(FORWARD, tmpX)
+        builder.turn(LEFT_TURN)
+        builder.move(FORWARD, tmpZ)
+        builder.turn(LEFT_TURN)
+        builder.move(FORWARD, tmpX)
+        builder.turn(LEFT_TURN)
+        builder.move(FORWARD, tmpZ)
+        builder.tracePath(SANDSTONE)
+        if (tmpX > 1) {
+            tmpX += -1
+            builder.move(FORWARD, 1)
+        }
+        if (tmpY <= y) {
+            tmpY += 1
+            builder.move(UP, 1)
+        }
+        if (tmpZ > 1) {
+            tmpZ += -1
+            builder.move(LEFT, 1)
+        }
+    }
+})
 player.onChat("pass-labyrinth", function () {
     agent.move(FORWARD, 1)
     while (agent.detect(AgentDetection.Block, DOWN)) {
@@ -66,3 +95,9 @@ function turnBuilderMyDirection () {
         builder.face(SOUTH)
     }
 }
+let tmpZ = 0
+let tmpY = 0
+let tmpX = 0
+tmpX = 0
+tmpY = 0
+tmpZ = 0
