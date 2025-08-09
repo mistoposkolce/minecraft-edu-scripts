@@ -1,7 +1,49 @@
-player.onChat("turn", function (num1) {
-    for (let index = 0; index < num1; index++) {
+let tmpX = 0
+let tmpY = 0
+let tmpZ = 0
+player.onChat("turn", function (x) {
+    for (let index = 0; index < x; index++) {
         agent.turn(LEFT_TURN)
     }
+})
+player.onChat("build-pyramid", function (x, y, z) {
+    turnBuilderMyDirection()
+    builder.teleportTo(player.position())
+    builder.move(FORWARD, 3)
+    builder.setOrigin()
+    tmpX = x
+    tmpY = 0
+    tmpZ = z
+    for (let index = 0; index < y; index++) {
+        builder.mark()
+        builder.move(FORWARD, tmpX)
+        builder.turn(LEFT_TURN)
+        builder.move(FORWARD, tmpZ)
+        builder.turn(LEFT_TURN)
+        builder.move(FORWARD, tmpX)
+        builder.turn(LEFT_TURN)
+        builder.move(FORWARD, tmpZ)
+        builder.tracePath(SANDSTONE)
+        builder.turn(LEFT_TURN)
+        if (tmpX > 2) {
+            tmpX += -2
+            builder.move(FORWARD, 1)
+        }
+        if (tmpY <= y) {
+            tmpY += 1
+            builder.move(UP, 1)
+        }
+        if (tmpZ > 2) {
+            tmpZ += -2
+            builder.move(LEFT, 1)
+        }
+    }
+    builder.move(FORWARD, 1)
+    builder.move(LEFT, 1)
+    builder.place(SANDSTONE)
+})
+player.onChat("go", function (x) {
+    agent.move(FORWARD, x)
 })
 player.onChat("pass-labyrinth", function () {
     agent.move(FORWARD, 1)
@@ -13,6 +55,14 @@ player.onChat("pass-labyrinth", function () {
         agent.move(FORWARD, 1)
     }
 })
-player.onChat("go", function (num1) {
-    agent.move(FORWARD, num1)
-})
+function turnBuilderMyDirection () {
+    if (positions.toCompassDirection(player.getOrientation()) == WEST) {
+        builder.face(WEST)
+    } else if (positions.toCompassDirection(player.getOrientation()) == EAST) {
+        builder.face(EAST)
+    } else if (positions.toCompassDirection(player.getOrientation()) == NORTH) {
+        builder.face(NORTH)
+    } else if (positions.toCompassDirection(player.getOrientation()) == SOUTH) {
+        builder.face(SOUTH)
+    }
+}
