@@ -95,6 +95,23 @@ function turnBuilderMyDirection () {
         builder.face(SOUTH)
     }
 }
+player.onChat("pyramid-lightup", function (numDirs, numUp) {
+    turnBuilderMyDirection()
+    builder.teleportTo(player.position())
+    for (let index4 = 0; index4 <= numUp - 1; index4++) {
+        builder.setOrigin()
+        for (let index = 0; index < numDirs; index++) {
+            while (!(blocks.testForBlock(SANDSTONE, builder.position()))) {
+                builder.move(FORWARD, 1)
+            }
+            builder.move(BACK, 1)
+            builder.place(PEARLESCENT_FROGLIGHT)
+            builder.teleportToOrigin()
+            builder.turn(LEFT_TURN)
+        }
+        builder.move(UP, 1)
+    }
+})
 let tmpZ = 0
 let tmpY = 0
 let tmpX = 0
